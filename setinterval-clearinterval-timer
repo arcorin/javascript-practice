@@ -53,8 +53,9 @@ function resetTimer() {
 }
 
 let cronoIntervalID
+let cronoTime
 let startTime
-let resumeTime = new Date()
+let resumeTime
 
 function crono() {
 	let cronoTime = date.getTime() - startTime.getTime();
@@ -70,19 +71,19 @@ function crono() {
 
 function startCrono() {
   startTime = new Date(); 
-  cronoIntervalID = setInterval( () => { crono();}, 1000);  
+  cronoIntervalID = setInterval( () => { crono();}, 1000 );  
 }
 
-/*
-function resumeCrono {
+
+function resumeCrono() {
   startTime = resumeTime;
-  cronoIntervalID = setInterval( () => { crono();}, 1000);
+  cronoIntervalID = setInterval( () => { crono();}, 1000 );
 }
-*/
+
 
 
 function stopCrono() {
-  resumeTime = document.getElementById("demo-crono").innerHTML
+  resumeTime = cronoTime;
   clearInterval(cronoIntervalID);
 }
 
@@ -96,3 +97,4 @@ function resetCrono() {
 
 </body>
 </html>
+
