@@ -5,25 +5,29 @@
 <h1>The Window Object</h1>
 <h2>The setInterval() and clearInterval() Methods</h2>
 
+<h3>Clock</h3>
+
 <p id="demo"></p>
 <p id="details"></p>
 
-<button onclick="myStop()">Stop the time</button>
-<button onclick="resetTimer()">Reset the time</button>
-<button onclick="startTimer()">Start the time</button>
+<button onclick="myStop()">Stop time</button>
+<button onclick="resetTimer()">Reset time</button> 
+<button onclick="startTimer()">Start time</button>
 
-<p id="demo-crono">00:00:00</p>
-<p id="details-crono"></p>
+<h3>Chronometer</h3>
+<p id="demo-chrono">00:00:00</p>
+<p id="first-details-chrono"></p>
+<p id="details-chrono"></p>
 
-<button onclick="startCrono()">Start the cronometer</button>
-<button onclick="stopCrono()">Stop the cronometer</button>
-<button onclick="resumeCrono()">Resume the cronometer</button>
-<button onclick="resetCrono()">Reset the cronometer</button>
+<button onclick="startChrono()">Start chronometer</button>
+<button onclick="stopChrono()">Stop chronometer</button>
+<button onclick="resumeChrono()">Resume chronometer</button>
+<button onclick="resetChrono()">Reset chronometer</button>
 
 <script>
 const myInterval = setInterval(myTimer, 1000);
 let date = new Date();
-document.getElementById("details").innerHTML = "the timer has started"
+document.getElementById("details").innerHTML = "started"
 
 function myTimer() {
   date = new Date();
@@ -36,65 +40,83 @@ let intervalID
 
 function startTimer() {
   intervalID = setInterval(myTimer, 1000);
-  document.getElementById("details").innerHTML = "the timer has started"
+  document.getElementById("details").innerHTML = "started"
 }
 
+// on click stop button
 function myStop() {
   clearInterval(myInterval);
   clearInterval(intervalID);
-  document.getElementById("details").innerHTML = "the timer has stoped"
+  document.getElementById("details").innerHTML = "stopped"
 }
 
-
+// on click reset button
 function resetTimer() {
   myStop()
   document.getElementById("demo").innerHTML = "00:00:00"; 
-  document.getElementById("details").innerHTML = "the timer was reset";
+  document.getElementById("details").innerHTML = "reseted";
 }
 
-let cronoIntervalID
-let cronoTime
+
+// Chronometer:
+
+let stopIntervalID
+let resumeIntervalID
+let elapseTime
 let startTime
 let resumeTime
 
-function crono() {
-	let cronoTime = date.getTime() - startTime.getTime();
+function chrono(time) {
+ 
+    let seconds = Math.floor((time / 1000) % 60).toString().padStart(2, "0");
     
-    let seconds = Math.floor((cronoTime / 1000) % 60).toString().padStart(2, "0");
+    let minutes = Math.floor((time / (1000 * 60)) % 60).toString().padStart(2, "0");
     
-    let minutes = Math.floor((cronoTime / (1000 * 60)) % 60).toString().padStart(2, "0");
+    let hours = Math.floor((time / (1000 * 60 * 60)) % 24).toString().padStart(2, "0");
     
-    let hours = Math.floor((cronoTime / (1000 * 60 * 60)) % 24).toString().padStart(2, "0");
-    
-    document.getElementById("demo-crono").innerHTML = `${hours}:${minutes}:${seconds}`;
+    document.getElementById("demo-chrono").innerHTML = `${hours}:${minutes}:${seconds}`;
+    document.getElementById("details-chrono").innerHTML = "elapsed time: " + time + " ms"; 
 }
 
-function startCrono() {
-  startTime = new Date(); 
-  cronoIntervalID = setInterval( () => { crono();}, 1000 );  
-}
-
-
-function resumeCrono() {
-  startTime = resumeTime;
-  cronoIntervalID = setInterval( () => { crono();}, 1000 );
-}
-
-
-
-function stopCrono() {
-  resumeTime = cronoTime;
-  clearInterval(cronoIntervalID);
+function startChrono() {
+    document.getElementById("first-details-chrono").innerHTML = "started"
+    startTime = new Date(); 
+    stopIntervalID = setInterval( () => { 
+  	  elapseTime = date.getTime() - startTime.getTime();
+  	  chrono(elapseTime);
+    }, 1000 );  
 }
 
 
-function resetCrono() {
-  stopCrono()
-  document.getElementById("demo-crono").innerHTML = "00:00:00"; 
+function stopChrono() {
+    clearInterval(stopIntervalID);
+    clearInterval(resumeIntervalID);
+     document.getElementById("first-details-chrono").innerHTML = "stopped";
+    document.getElementById("details-chrono").innerHTML += "elapsed time: " + elapsedTime + " ms";
+}
+
+
+function resumeChrono() {   
+   startTime = new Date(); 
+   resumeIntervalID = setInterval( () => { 
+     resumeTime = elapseTime + date.getTime() - startTime.getTime();
+     chrono(resumeTime);
+   }, 1000 );
+   document.getElementById("first-details-chrono").innerHTML = "resumed";
+}
+
+
+function resetChrono() {
+   clearInterval(stopIntervalID);
+   clearInterval(resumeIntervalID);
+   document.getElementById("demo-chrono").innerHTML = "00:00:00";
+   document.getElementById("first-details-chrono").innerHTML = "reseted";
+   document.getElementById("details-chrono").innerHTML = "elapsed time: " + 0 + " ms";
 }
 
 </script>
 
 </body>
 </html>
+
 
